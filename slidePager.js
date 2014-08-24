@@ -4,23 +4,22 @@
     function SlidePager(options) {
       this.$body = $("body");
       this.number = 1111;
-      this.beforeState = [];
     }
 
     SlidePager.prototype.shiftRight = function() {
-      return this.mover("right", "left");
+      return this.selectPanel("right");
     };
 
     SlidePager.prototype.shiftLeft = function() {
-      return this.mover("left", "right");
+      return this.selectPanel("left");
     };
 
     SlidePager.prototype.shiftUp = function() {
-      return this.mover("up", "down");
+      return this.selectPanel("up");
     };
 
     SlidePager.prototype.shiftDown = function() {
-      return this.mover("down", "up");
+      return this.selectPanel("down");
     };
 
     SlidePager.prototype.$dataname = function(number) {
@@ -31,78 +30,49 @@
       return this.beforeState[this.beforeState.length - 1] === latestState;
     };
 
-    SlidePager.prototype.mover = function(op1, op2) {
-      if (this.isBack(op2)) {
-        switch (op2) {
-          case "up":
-            this.removeposition(op2, 10);
-            break;
-          case "down":
-            this.removeposition(op2, 1);
-            break;
-          case "left":
-            this.removeposition(op2, 1000);
-            break;
-          case "right":
-            this.removeposition(op2, 100);
-        }
-        return this.beforeState.pop();
-      } else {
-        switch (op1) {
-          case "up":
-            if (this.$dataname(this.number + 10).hasClass("pages")) {
-              this.removeactive(op1, 10);
-              this.number += 10;
-              this.$dataname(this.number).addClass("active");
-              return this.beforeState.push(op1);
-            }
-            break;
-          case "down":
-            if (this.$dataname(this.number + 1).hasClass("pages")) {
-              this.removeactive(op1, 1);
-              this.number += 1;
-              this.$dataname(this.number).addClass("active");
-              return this.beforeState.push(op1);
-            }
-            break;
-          case "left":
-            if (this.$dataname(this.number + 1000).hasClass("pages")) {
-              this.removeactive(op1, 1000);
-              this.number += 1000;
-              this.$dataname(this.number).addClass("active");
-              return this.beforeState.push(op1);
-            }
-            break;
-          case "right":
-            if (this.$dataname(this.number + 100).hasClass("pages")) {
-              this.removeactive(op1, 100);
-              this.number += 100;
-              this.$dataname(this.number).addClass("active");
-              return this.beforeState.push(op1);
-            }
-        }
+    SlidePager.prototype.selectPanel = function(dir) {
+      switch (dir) {
+        case "left":
+          if (parseInt((this.number + "").slice(0, 1)) >= parseInt((this.number + "").slice(2, 3))) {
+            return this.movePanel(1000, dir);
+          } else {
+            return this.movePanel(-10, dir);
+          }
+          break;
+        case "up":
+          if (parseInt((this.number + "").slice(1, 2)) >= parseInt((this.number + "").slice(3, 4))) {
+            return this.movePanel(100, dir);
+          } else {
+            return this.movePanel(-1, dir);
+          }
+          break;
+        case "right":
+          if (parseInt((this.number + "").slice(2, 3)) >= parseInt((this.number + "").slice(0, 1))) {
+            return this.movePanel(10, dir);
+          } else {
+            return this.movePanel(-1000, dir);
+          }
+          break;
+        case "down":
+          if (parseInt((this.number + "").slice(3, 4)) >= parseInt((this.number + "").slice(1, 2))) {
+            return this.movePanel(1, dir);
+          } else {
+            return this.movePanel(-100, dir);
+          }
       }
     };
 
-    SlidePager.prototype.removeactive = function(op1, num) {
-      return this.$dataname(this.number).addClass("move" + op1).on("transitionend", (function(_this) {
-        return function() {
-          return _this.$dataname(_this.number - num).removeClass("active");
-        };
-      })(this));
-    };
-
-    SlidePager.prototype.removeposition = function(op2, num) {
-      this.number -= num;
-      this.$dataname(this.number + num).css({
-        'z-index': '1'
-      });
-      this.$dataname(this.number).addClass("active");
-      return this.$dataname(this.number).removeClass("move" + op2).on("transitionend", (function(_this) {
-        return function() {
-          return _this.$dataname(_this.number + num).removeClass("active");
-        };
-      })(this));
+    SlidePager.prototype.movePanel = function(num, dir) {
+      if (this.$dataname(this.number + num).hasClass("pages")) {
+        this.$dataname(this.number).addClass("move" + dir).on("transitionend", (function(_this) {
+          return function() {
+            _this.$dataname(_this.number - num).removeClass("active");
+            return _this.$dataname(_this.number - num).removeClass("move" + dir);
+          };
+        })(this));
+        this.number += num;
+        return this.$dataname(this.number).addClass("active");
+      }
     };
 
     return SlidePager;

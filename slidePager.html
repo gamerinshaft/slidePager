@@ -9,13 +9,33 @@
 </head>
 
 <body>
-<div class="pages pages1 active" data-js="1111">こんにちは</div>
-<div class="pages pages2" data-js="2111">こんにちは</div>
-<div class="pages pages3" data-js="1211">こんにちは</div>
-<div class="pages pages4" data-js="1121">こんにちは</div>
-<div class="pages " data-js="1112">こんにちは</div>
+<div class="pages pages1 active" data-js="1111">1111</div>
+<div class="pages pages2" data-js="2111">21111</div>
+<div class="pages pages3" data-js="1211">1211</div>
+<div class="pages pages2" data-js="1311">1311</div>
+<div class="pages pages4" data-js="1121">1121</div>
+<div class="pages pages2" data-js="1221">1221</div>
 <script>
+$(function(){
   pager = new SlidePager()
+  $('html').keyup(function(e){
+    switch(e.which){
+      case 39: // Key[→]
+      pager.shiftRight();
+      break;
+      case 37: // Key[←]
+      pager.shiftLeft();
+      break;
+      case 38: // Key[↑]
+      pager.shiftUp();
+      break;
+      case 40: // Key[↓]
+      pager.shiftDown()
+      break;
+    }
+  });
+
+
 
   $("body").touchwipe({
      wipeLeft: function() { pager.shiftRight(); },
@@ -26,6 +46,7 @@
      min_move_y: 20,
      preventDefaultEvents: true
   });
+});
 </script>
 </body>
 </html>
