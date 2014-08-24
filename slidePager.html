@@ -1,0 +1,27 @@
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+<link rel="stylesheet" href="slidePager.css" type="text/css">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<script src="touchwipe.js"></script>
+<script src="slidePager.js"></script>
+</head>
+
+<body>
+
+<script>
+  pager = new SlidePager()
+
+  $("body").touchwipe({
+     wipeLeft: function() { pager.shiftRight(); },
+     wipeRight: function() { pager.shiftLeft(); },
+     wipeUp: function() { pager.shiftUp(); },
+     wipeDown: function() { pager.shiftDown(); },
+     min_move_x: 20,
+     min_move_y: 20,
+     preventDefaultEvents: true
+  });
+</script>
+</body>
+</html>
