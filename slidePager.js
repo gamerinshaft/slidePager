@@ -63,11 +63,16 @@
     };
 
     SlidePager.prototype.movePanel = function(num, dir) {
+      var e;
       if (this.$dataname(this.number + num).hasClass("pages")) {
+        e = $.Event("transing");
+        $(window).trigger(e);
         this.$dataname(this.number).addClass("move" + dir).on("transitionend", (function(_this) {
           return function() {
             _this.$dataname(_this.number - num).removeClass("active");
-            return _this.$dataname(_this.number - num).removeClass("move" + dir);
+            _this.$dataname(_this.number - num).removeClass("move" + dir);
+            e = $.Event("transfinish");
+            return $(window).trigger(e);
           };
         })(this));
         this.number += num;

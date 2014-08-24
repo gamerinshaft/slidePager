@@ -50,9 +50,13 @@ class window.SlidePager
 
   movePanel: (num, dir) ->
     if @$dataname(@number+num).hasClass("pages")
+      e = $.Event( "transing" )
+      $(window).trigger( e )
       @$dataname(@number).addClass("move"+dir).on "transitionend", =>
         @$dataname(@number-num).removeClass("active")
         @$dataname(@number-num).removeClass("move"+dir)
+        e = $.Event( "transfinish" );
+        $(window).trigger( e );
       @number += num
       @$dataname(@number).addClass("active")
 

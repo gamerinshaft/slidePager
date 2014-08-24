@@ -6,45 +6,100 @@
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 <script src="touchwipe.js"></script>
 <script src="slidePager.js"></script>
+<link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
 </head>
 
 <body>
-<div class="pages pages1 active" data-js="1111">1111</div>
-<div class="pages pages2" data-js="2111">21111</div>
-<div class="pages pages3" data-js="1211">1211</div>
-<div class="pages pages2" data-js="1311">1311</div>
-<div class="pages pages4" data-js="1121">1121</div>
-<div class="pages pages2" data-js="1221">1221</div>
+<div class="pages pages1 active" data-js="1111">
+  <div class="black-cover"></div>
+  <div class="pages__content content">
+    <div class="content__title">
+      Wellcome
+    </div>
+    <div class="content__description">
+      スワイプもしくは方向キーで移動
+    </div>
+    <div class="content__bread-right">About</div>
+    <div class="content__bread-top">HomePage</div>
+    <div class="content__bread-bottom">contact</div>
+    <div class="content__bread-left">Hobby</div>
+  </div>
+</div>
+<div class="pages" data-js="2111">
+  <div class="pages__content">
+    たねいちです。
+  </div>
+</div>
+<div class="pages" data-js="1211">1211</div>
+<div class="pages" data-js="1311">1311</div>
+<div class="pages" data-js="1121">1121</div>
+<div class="pages" data-js="1221">1221</div>
+
+
 <script>
 $(function(){
+  $(window).on("load resize", function(){
+    $(".content__bread-right").css({
+      'top': $(".content__bread-right").height()/2 + $(window).height()/2
+    })
+    $(".content__bread-left").css({
+      'top': $(".content__bread-left").height()/2 + $(window).height()/2
+    })
+  });
+
+  var canDo = true;
+  $(window).on("transfinish", function(){
+    canDo = true;
+  })
+  $(window).on("transing", function(){
+    canDo = false;
+  })
   pager = new SlidePager()
   $('html').keyup(function(e){
-    switch(e.which){
-      case 39: // Key[→]
-      pager.shiftRight();
-      break;
-      case 37: // Key[←]
-      pager.shiftLeft();
-      break;
-      case 38: // Key[↑]
-      pager.shiftUp();
-      break;
-      case 40: // Key[↓]
-      pager.shiftDown()
-      break;
+    if(canDo){
+      switch(e.which){
+        case 39: // Key[→]
+        pager.shiftRight();
+        break;
+        case 37: // Key[←]
+        pager.shiftLeft();
+        break;
+        case 38: // Key[↑]
+        pager.shiftUp();
+        break;
+        case 40: // Key[↓]
+        pager.shiftDown()
+        break;
+      }
     }
   });
 
 
 
   $("body").touchwipe({
-     wipeLeft: function() { pager.shiftRight(); },
-     wipeRight: function() { pager.shiftLeft(); },
-     wipeUp: function() { pager.shiftUp(); },
-     wipeDown: function() { pager.shiftDown(); },
-     min_move_x: 20,
-     min_move_y: 20,
-     preventDefaultEvents: true
+    wipeLeft: function() {
+      if(canDo){
+        pager.shiftRight();
+      }
+    },
+    wipeRight: function() {
+      if(canDo){
+        pager.shiftLeft();
+      }
+    },
+    wipeUp: function() {
+      if(canDo){
+        pager.shiftUp();
+      }
+    },
+    wipeDown: function() {
+      if(canDo){
+        pager.shiftDown();
+      }
+    },
+    min_move_x: 20,
+    min_move_y: 20,
+    preventDefaultEvents: false
   });
 });
 </script>
