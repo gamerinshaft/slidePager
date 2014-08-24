@@ -7,52 +7,20 @@
       this.beforeState = [];
     }
 
-    SlidePager.prototype.shiftLeft = function() {
-      if (this.isBack("right")) {
-        this.number -= 100;
-        this.beforeState.pop();
-      } else {
-        this.number += 1000;
-        this.beforeState.push("left");
-      }
-      this.$dataname(this.number).addClass("none");
-      return this.$body.html(this.beforeState);
+    SlidePager.prototype.shiftRight = function() {
+      return this.mover("right", "left");
     };
 
-    SlidePager.prototype.shiftRight = function() {
-      if (this.isBack("left")) {
-        this.number -= 1000;
-        this.beforeState.pop();
-      } else {
-        this.number += 100;
-        this.beforeState.push("right");
-      }
-      this.$dataname(this.number).addClass("none");
-      return this.$body.html(this.beforeState);
+    SlidePager.prototype.shiftLeft = function() {
+      return this.mover("left", "right");
     };
 
     SlidePager.prototype.shiftUp = function() {
-      if (this.isBack("down")) {
-        this.number -= 1;
-        this.beforeState.pop();
-      } else {
-        this.number += 10;
-        this.beforeState.push("up");
-      }
-      this.$dataname(this.number).addClass("none");
-      return this.$body.html(this.beforeState);
+      return this.mover("up", "down");
     };
 
     SlidePager.prototype.shiftDown = function() {
-      if (this.isBack("up")) {
-        this.number -= 10;
-        this.beforeState.pop();
-      } else {
-        this.number += 1;
-        this.beforeState.push("down");
-      }
-      this.$dataname(this.number).addClass("none");
-      return this.$body.html(this.beforeState);
+      return this.mover("down", "up");
     };
 
     SlidePager.prototype.$dataname = function(number) {
@@ -61,6 +29,80 @@
 
     SlidePager.prototype.isBack = function(latestState) {
       return this.beforeState[this.beforeState.length - 1] === latestState;
+    };
+
+    SlidePager.prototype.mover = function(op1, op2) {
+      if (this.isBack(op2)) {
+        switch (op2) {
+          case "up":
+            this.removeposition(op2, 10);
+            break;
+          case "down":
+            this.removeposition(op2, 1);
+            break;
+          case "left":
+            this.removeposition(op2, 1000);
+            break;
+          case "right":
+            this.removeposition(op2, 100);
+        }
+        return this.beforeState.pop();
+      } else {
+        switch (op1) {
+          case "up":
+            if (this.$dataname(this.number + 10).hasClass("pages")) {
+              this.removeactive(op1, 10);
+              this.number += 10;
+              this.$dataname(this.number).addClass("active");
+              return this.beforeState.push(op1);
+            }
+            break;
+          case "down":
+            if (this.$dataname(this.number + 1).hasClass("pages")) {
+              this.removeactive(op1, 1);
+              this.number += 1;
+              this.$dataname(this.number).addClass("active");
+              return this.beforeState.push(op1);
+            }
+            break;
+          case "left":
+            if (this.$dataname(this.number + 1000).hasClass("pages")) {
+              this.removeactive(op1, 1000);
+              this.number += 1000;
+              this.$dataname(this.number).addClass("active");
+              return this.beforeState.push(op1);
+            }
+            break;
+          case "right":
+            if (this.$dataname(this.number + 100).hasClass("pages")) {
+              this.removeactive(op1, 100);
+              this.number += 100;
+              this.$dataname(this.number).addClass("active");
+              return this.beforeState.push(op1);
+            }
+        }
+      }
+    };
+
+    SlidePager.prototype.removeactive = function(op1, num) {
+      return this.$dataname(this.number).addClass("move" + op1).on("transitionend", (function(_this) {
+        return function() {
+          return _this.$dataname(_this.number - num).removeClass("active");
+        };
+      })(this));
+    };
+
+    SlidePager.prototype.removeposition = function(op2, num) {
+      this.number -= num;
+      this.$dataname(this.number + num).css({
+        'z-index': '1'
+      });
+      this.$dataname(this.number).addClass("active");
+      return this.$dataname(this.number).removeClass("move" + op2).on("transitionend", (function(_this) {
+        return function() {
+          return _this.$dataname(_this.number + num).removeClass("active");
+        };
+      })(this));
     };
 
     return SlidePager;
